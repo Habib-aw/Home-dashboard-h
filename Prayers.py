@@ -31,7 +31,6 @@ class Prayers:
         if self.prayers[1][1] != "":
             for i in range(1, 2):
                 for j in range(1, 7):
-                    print(self.prayers[i][j],i,j)
                     salahsSplit = self.prayers[i][j].split(":")
                     if j == 1 or j==2 or (j == 3 and (salahsSplit[0] == "12" or salahsSplit[0] == "11")):
                         self.prayerTimeObj[i - 1][j - 1] = datetime(year, month + 1, day + 1, int(salahsSplit[0]), int(salahsSplit[1]))
@@ -45,7 +44,7 @@ class Prayers:
         try:
             # res = requests.get('https://data.baitulmamur.academy/')
             # self.data = json.loads(res.text)
-            self.data = json.load(open(str(today.year)+".json"))
+            self.data = json.load(open("2024.json"))
             self.prayers = [
                 ["","Tahajjud", "Fajr", "Zuhr", "Asr", "Maghrib", "Isha"],
                 ["Start",self.data[month][day]['Fajr_start'],self.data[month][day]['Fajr_start'], self.data[month][day]['Zuhr_start'], self.data[month][day]['Asr_start2'], self.data[month][day]['Maghrib_start'], self.data[month][day]['Isha_start']],
