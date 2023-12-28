@@ -44,7 +44,7 @@ class Prayers:
         try:
             # res = requests.get('https://data.baitulmamur.academy/')
             # self.data = json.loads(res.text)
-            self.data = json.load(open("2024.json"))
+            self.data = json.load(open(str(today.year)+".json"))
             self.prayers = [
                 ["","Tahajjud", "Fajr", "Zuhr", "Asr", "Maghrib", "Isha"],
                 ["Start",self.data[month][day]['Fajr_start'],self.data[month][day]['Fajr_start'], self.data[month][day]['Zuhr_start'], self.data[month][day]['Asr_start2'], self.data[month][day]['Maghrib_start'], self.data[month][day]['Isha_start']],
