@@ -18,7 +18,7 @@ class Prayers:
         self.prayerLength = 5
         self.schedulerSet = False
         self.getPrayersScheduler = None
-        self.prayerTimeObj = [[None for _ in range(6)] for _ in range(1)]
+        self.prayerTimeObj = [None for _ in range(6)]
         self.prayerLabels = [[None for _ in range(6)] for _ in range(2)]
         self.getPrayers()
         self.adhaanAnnounce = False
@@ -28,18 +28,21 @@ class Prayers:
         schedule.every(adhaanCheckInterval).seconds.do(self.announceAdhaanAndSalah)
 
     def salahsToDate(self):
+        index = 0
         if self.prayers[1][1] != "":
             for i in range(1, 2):
                 for j in range(1, 7):
+                    # print(self.prayers[i][j],i,j)
                     salahsSplit = self.prayers[i][j].split(":")
                     if j == 1 or j==2 or (j == 3 and (salahsSplit[0] == "12" or salahsSplit[0] == "11")):
-                        self.prayerTimeObj[i - 1][j - 1] = datetime(year, month + 1, day + 1, int(salahsSplit[0]), int(salahsSplit[1]))
+                        self.prayerTimeObj[index] = datetime(year, month + 1, day + 1, int(salahsSplit[0]), int(salahsSplit[1]))
                     else:
-                        self.prayerTimeObj[i - 1][j - 1] = datetime(year, month + 1, day + 1, int(salahsSplit[0]) + 12, int(salahsSplit[1]))
+                        self.prayerTimeObj[index] = datetime(year, month + 1, day + 1, int(salahsSplit[0]) + 12, int(salahsSplit[1]))
+                    index+=1
         
-        self.prayers[1][1] = getTahajjudTime(self.prayerTimeObj[0][0])
-        self.prayerTimeObj[0][0] = getTahajjudDateTime(self.prayerTimeObj[0][0])
-        self.prayers[2][6] = getMiddleOfNight(self.prayerTimeObj[0][4])
+        self.prayers[1][1] = getTahajjudTime(self.prayerTimeObj[0])
+        # self.prayerTimeObj[0][0] = getTahajjudDateTime(self.prayerTimeObj[0][0])
+        self.prayers[2][6] = getMiddleOfNight(self.prayerTimeObj[4])
     def getPrayers(self):
         try:
             # res = requests.get('https://data.baitulmamur.academy/')
@@ -88,22 +91,30 @@ class Prayers:
 
     def checkPrayerPassed(self):
         if self.prayers[1][1] != "":
-            for i in range(len(self.prayerTimeObj[0])):
-                if (self.prayerTimeObj[0][i] < datetime.now()):
+            for i in range(len(self.prayerTimeObj)):
+                if (self.prayerTimeObj[i] < datetime.now()):
                     self.prayerLabels[0][i].config(background="green")
-            for i in range(len(self.prayerTimeObj[0])):
-                if i == len(self.prayerTimeObj[0]) - 1:
-                    if(datetime.now()>  getMiddleOfNightDateTime(self.prayerTimeObj[0][4])):
+            for i in range(len(self.prayerTimeObj)):
+                if i == len(self.prayerTimeObj) - 1:
+                    if(datetime.now()>  getMiddleOfNightDateTime(self.prayerTimeObj[4])):
                         self.prayerLabels[0][i].config(background="red")
                     break
-                if (self.prayerTimeObj[0][i + 1] < datetime.now()):
+                if (self.prayerTimeObj[i + 1] < datetime.now()):
                     self.prayerLabels[0][i].config(background="red")
 
 
     def announceAdhaanAndSalah(self):
+        print(self.prayerTimeObj)
         if self.prayers[1][1] != "":
             for i in range(len(self.prayerTimeObj)):
-                if (datetime.now() >= self.prayerTimeObj[i][0] and datetime.now() < (self.prayerTimeObj[i][0] + timedelta(minutes=1))) and not self.adhaanAnnounce:
+
+                print("output: ",i)
+                print(datetime.now() >= self.prayerTimeObj[i],"datetime.now() >= self.prayerTimeObj[i][0]")
+                print(datetime.now() < (self.prayerTimeObj[i] + timedelta(minutes=1)),"datetime.now() < (self.prayerTimeObj[i][0] + timedelta(minutes=1))")
+                print((self.prayerTimeObj[i] + timedelta(minutes=1)))
+                print("length: ",len(self.prayerTimeObj))
+                if (datetime.now() >= self.prayerTimeObj[i] and datetime.now() < (self.prayerTimeObj[i] + timedelta(minutes=1))) and not self.adhaanAnnounce:
+                    print("hi")
                     self.adhaanAnnounce = True
                     self.startAnnounceIndex = i
                     self.checkPrayerPassed()
@@ -115,8 +126,8 @@ class Prayers:
                         Thread(target=playNoise, args=("adhaan-new-long",)).start()
                     break
 
-            if not (datetime.now() >= self.prayerTimeObj[self.startAnnounceIndex][0] and datetime.now() < (
-                    self.prayerTimeObj[self.startAnnounceIndex][0] + timedelta(minutes=1))):
+            if not (datetime.now() >= self.prayerTimeObj[self.startAnnounceIndex] and datetime.now() < (
+                    self.prayerTimeObj[self.startAnnounceIndex] + timedelta(minutes=1))):
                 self.adhaanAnnounce = False
 def getYesterdayMaghrib():
     yesterday = datetime.now() - timedelta(days=1)
