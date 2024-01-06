@@ -41,7 +41,7 @@ class Prayers:
                     index+=1
         
         self.prayers[1][1] = getTahajjudTime(self.prayerTimeObj[0])
-        # self.prayerTimeObj[0][0] = getTahajjudDateTime(self.prayerTimeObj[0][0])
+        self.prayerTimeObj[0] = getTahajjudDateTime(self.prayerTimeObj[0])
         self.prayers[2][6] = getMiddleOfNight(self.prayerTimeObj[4])
     def getPrayers(self):
         try:
@@ -49,7 +49,7 @@ class Prayers:
             # self.data = json.loads(res.text)
             self.data = json.load(open(str(today.year)+".json"))
             self.prayers = [
-                ["","Tahajjud", "Fajr", "Zuhr", "Asr", "Maghrib", "Isha"],
+                ["","Tahajjud Last Third", "Fajr", "Zuhr", "Asr", "Maghrib", "Isha"],
                 ["Start",self.data[month][day]['Fajr_start'],self.data[month][day]['Fajr_start'], self.data[month][day]['Zuhr_start'], self.data[month][day]['Asr_start2'], self.data[month][day]['Maghrib_start'], self.data[month][day]['Isha_start']],
                 ["End", "-", self.data[month][day]['Sunrise'],"-", "-", "-", ""]
             ]
@@ -62,9 +62,9 @@ class Prayers:
         except Exception as e:
             print("Error!\n\n", e)
             self.prayers = [
-                ["", "Fajr", "Zuhr", "Asr", "Maghrib", "Isha"],
-                ["Start", "", "", "", "", ""],
-                ["End", "", "", "", "", ""]
+                ["", "Tahajjud Last Third","Fajr", "Zuhr", "Asr", "Maghrib", "Isha"],
+                ["Start", "","", "", "", "", ""],
+                ["End", "","", "", "", "", ""]
 
             ]
 
@@ -83,8 +83,11 @@ class Prayers:
                     self.prayerLabels[i - 1][j - 1] = Label(self.frame, text=self.prayers[i][j], background=prayerFrameBgColor,font=("Arial", prayerFontSize), foreground="white")
                     self.prayerLabels[i - 1][j - 1].grid(row=i, column=j, ipadx=prayerLabelsPaddingX)
                 else:
+                    font =notPrayerFontSize
+                    if i==0 and j == 1:
+                        font = notPrayerFontSize - 7
                     notPrayer = Label(self.frame, text=self.prayers[i][j], background=prayerFrameBgColor,
-                                      font=("Arial", notPrayerFontSize), foreground="white")
+                                      font=("Arial", font), foreground="white")
                     notPrayer.grid(row=i, column=j, ipadx=otherPrayerLabelsPaddingX)
         if self.prayers[1][1] != "":
             self.checkPrayerPassed()
@@ -95,6 +98,9 @@ class Prayers:
                 if (self.prayerTimeObj[i] < datetime.now()):
                     self.prayerLabels[0][i].config(background="green")
             for i in range(len(self.prayerTimeObj)):
+                if i == 1:
+                    if datetime.now() > getSunriseDateTime():
+                        self.prayerLabels[0][i].config(background="red")
                 if i == len(self.prayerTimeObj) - 1:
                     if(datetime.now()>  getMiddleOfNightDateTime(self.prayerTimeObj[4])):
                         self.prayerLabels[0][i].config(background="red")
@@ -104,17 +110,9 @@ class Prayers:
 
 
     def announceAdhaanAndSalah(self):
-        print(self.prayerTimeObj)
         if self.prayers[1][1] != "":
             for i in range(len(self.prayerTimeObj)):
-
-                print("output: ",i)
-                print(datetime.now() >= self.prayerTimeObj[i],"datetime.now() >= self.prayerTimeObj[i][0]")
-                print(datetime.now() < (self.prayerTimeObj[i] + timedelta(minutes=1)),"datetime.now() < (self.prayerTimeObj[i][0] + timedelta(minutes=1))")
-                print((self.prayerTimeObj[i] + timedelta(minutes=1)))
-                print("length: ",len(self.prayerTimeObj))
                 if (datetime.now() >= self.prayerTimeObj[i] and datetime.now() < (self.prayerTimeObj[i] + timedelta(minutes=1))) and not self.adhaanAnnounce:
-                    print("hi")
                     self.adhaanAnnounce = True
                     self.startAnnounceIndex = i
                     self.checkPrayerPassed()
@@ -125,7 +123,6 @@ class Prayers:
                     else:
                         Thread(target=playNoise, args=("adhaan-new-long",)).start()
                     break
-
             if not (datetime.now() >= self.prayerTimeObj[self.startAnnounceIndex] and datetime.now() < (
                     self.prayerTimeObj[self.startAnnounceIndex] + timedelta(minutes=1))):
                 self.adhaanAnnounce = False
@@ -162,3 +159,8 @@ def getMiddleOfNight(Maghrib):
     if hour > 12:
         hour -=12
     return str(hour) +":" +str(middleOfNight.minute)
+def getSunriseDateTime():
+    sunriseTime = json.load(open(str(today.year)+".json"))[today.month-1][today.day-1]['Sunrise']
+    salahsSplit = sunriseTime.split(":")
+    sunriseTimeObject =  datetime(today.year, today.month, today.day, int(salahsSplit[0]) , int(salahsSplit[1]))
+    return sunriseTimeObject
