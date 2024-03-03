@@ -121,7 +121,7 @@ class Prayers:
                     elif i == 1:
                         Thread(target=playNoise, args=("adhaan-new",)).start()
                     else:
-                        Thread(target=playNoise, args=("adhaan-new-long",)).start()
+                        Thread(target=playNoise, args=("full-adhaan",)).start()
                     break
             if not (datetime.now() >= self.prayerTimeObj[self.startAnnounceIndex] and datetime.now() < (
                     self.prayerTimeObj[self.startAnnounceIndex] + timedelta(minutes=1))):
