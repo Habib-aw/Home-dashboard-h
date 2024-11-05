@@ -29,7 +29,7 @@ prayerFrame.pack()
 errorMsgLabel = Label(notesFrame,text="Error, no internet connection",font=("Arial",notesTextFontSize+10),background=notesFrameBgColor,foreground="red")
 p = Prayers(prayerFrame)
 # Label(notesFrame,text="Notes",font=("Arial",notesTitleFontSize),background=dateTimeFrameBgColor,foreground="white").pack(side='top')
-w = Weather(weatherFrame,errorMsgLabel)
+# w = Weather(weatherFrame,errorMsgLabel)
 # if today.strftime("%A") =="Friday":
 #     Label(notesFrame,text="- Bid for house",font=("Arial",notesTextFontSize),background=notesFrameBgColor,foreground="white").pack()
 clock = Label(dateTimeFrame,text=today.strftime('%I:%M:%S %p'),font=("Arial",clockFontSize),background=dateTimeFrameBgColor,foreground="white")

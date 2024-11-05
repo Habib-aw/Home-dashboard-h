@@ -142,7 +142,10 @@ def getTahajjudDateTime(Fajr):
     return tahajjudDateTime
 def getTahajjudTime(Fajr):
     tahajjudDateTime = getTahajjudDateTime(Fajr)
-    return str(tahajjudDateTime.hour) +":" +str(tahajjudDateTime.minute)
+    t_min = str(tahajjudDateTime.minute)
+    if len(t_min) == 1:
+        return str(tahajjudDateTime.hour) +":0" + t_min
+    return str(tahajjudDateTime.hour) +":" + t_min
 def getMiddleOfNightDateTime(Maghrib):
     halfNightLength = getTmrroNightLength(Maghrib)/2
     middleOfNight= Maghrib + halfNightLength
