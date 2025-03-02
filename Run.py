@@ -3,6 +3,7 @@ from datetime import datetime
 from Weather import Weather
 from Settings import prayerFrameBgColor,notesFrameBgColor,weatherFrameBgColor,dateTimeFrameBgColor,today,prayerFrameSpan,maxColumnSpan,clockFontSize,dateFontSize,notesTextFontSize,notesTitleFontSize,prayerFramePadY,notesFramePadY,weatherFramePadY,dateTimeFramePadY
 from Prayers import Prayers
+from Ramadan import Ramadan
 import os
 import schedule
 root= Tk()
@@ -15,7 +16,7 @@ dateTimeFrame = Frame(root,background=dateTimeFrameBgColor)
 
 
 
-notesFrame.pack()
+notesFrame.pack(fill='x')
 weatherFrame.pack()
 dateTimeFrame.pack(expand=1)
 prayerFrame.pack()
@@ -26,8 +27,35 @@ prayerFrame.pack()
 
 
 
-errorMsgLabel = Label(notesFrame,text="Error, no internet connection",font=("Arial",notesTextFontSize+10),background=notesFrameBgColor,foreground="red")
-p = Prayers(prayerFrame)
+# errorMsgLabel = Label(notesFrame,text="Error, no internet connection",font=("Arial",notesTextFontSize+10),background=notesFrameBgColor,foreground="red")
+
+r = Ramadan()
+dayFrame = Frame(notesFrame,background=notesFrameBgColor)
+sehriFrame = Frame(notesFrame,background=notesFrameBgColor)
+iftaarFrame=Frame(notesFrame,background=notesFrameBgColor)
+dayLabel = Label(dayFrame,text="Ramadan Day",font=("Arial",35),background=notesFrameBgColor,foreground="white")
+day = Label(dayFrame,text=r.getRamadanDay(),font=("Arial",80),background=notesFrameBgColor,foreground="white")
+
+sehriLabel = Label(sehriFrame,text="Sehri Ends",font=("Arial",35),background=notesFrameBgColor,foreground="white")
+sehri = Label(sehriFrame,text=r.todaySehri,font=("Arial",80),background=notesFrameBgColor,foreground="white")
+
+iftaarLabel = Label(iftaarFrame,text="Iftaar Starts",font=("Arial",35),background=notesFrameBgColor,foreground="white")
+iftaar = Label(iftaarFrame,text=r.todayIftaar,font=("Arial",80),background=notesFrameBgColor,foreground="white")
+
+
+dayLabel.pack()
+day.pack()
+sehriLabel.pack()
+sehri.pack()
+iftaarLabel.pack()
+iftaar.pack()
+
+dayFrame.pack(side="left",expand=True)
+sehriFrame.pack(side="left",expand=True)
+iftaarFrame.pack(side="right",expand=True)
+
+p = Prayers(prayerFrame,r.tmrroSehri,sehri,r.tmrroIftaar,iftaar)
+# p = Prayers(prayerFrame)
 # Label(notesFrame,text="Notes",font=("Arial",notesTitleFontSize),background=dateTimeFrameBgColor,foreground="white").pack(side='top')
 # w = Weather(weatherFrame,errorMsgLabel)
 # if today.strftime("%A") =="Friday":
