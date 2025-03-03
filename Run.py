@@ -6,6 +6,8 @@ from Prayers import Prayers
 from Ramadan import Ramadan
 import os
 import schedule
+
+time.sleep(5)
 root= Tk()
 
 
