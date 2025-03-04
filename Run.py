@@ -8,7 +8,7 @@ import os
 import schedule
 import time
 
-time.sleep(5)
+time.sleep(10)
 root= Tk()
 
 
