@@ -167,7 +167,7 @@ def getTmrroTahajjudTime(Maghrib):
     third_night_length = getTmrroNightLength(Maghrib)/3
     tmrroTahajjudTime = Maghrib + (third_night_length*2)
     
-    return tmrroTahajjudTime.strftime("%#I:%M")
+    return tmrroTahajjudTime.strftime("%-I:%M")
 def getTmrroFajr():
     tmrro = datetime.now() + timedelta(days=1)
     tmrroFajr =  json.load(open(str(today.year)+".json"))[tmrro.month-1][tmrro.day-1]['Fajr_start']
